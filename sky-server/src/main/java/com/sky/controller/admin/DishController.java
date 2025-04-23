@@ -28,6 +28,7 @@ public class DishController {
 
     /**
      * 新增菜品
+     *
      * @param dishDTO
      * @return
      */
@@ -41,6 +42,7 @@ public class DishController {
 
     /**
      * 分页查询菜品
+     *
      * @param dishPageQueryDTO
      * @return
      */
@@ -55,22 +57,29 @@ public class DishController {
     @DeleteMapping
     @ApiOperation("菜品批量删除")
     public Result delete(@RequestParam List<Long> ids) {
-        log.info("删除菜品：{}",ids);
+        log.info("删除菜品：{}", ids);
         dishService.deleteBatch(ids);
         return Result.success();
     }
 
     @GetMapping("/{id}")
     public Result<DishVO> getDishById(@PathVariable Long id) {
-        log.info("Get dish by id {}",id);
+        log.info("Get dish by id {}", id);
         DishVO dishVO = dishService.getByIdWithFlavor(id);
         return Result.success(dishVO);
     }
 
     @PutMapping
     public Result update(@RequestBody DishDTO dishDTO) {
-        log.info("alt dish {}",dishDTO);
+        log.info("alt dish {}", dishDTO);
         dishService.updateWithFlavor(dishDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/status/{status}")
+    public Result updateStatus(@PathVariable int status, @RequestParam Long id) {
+        log.info("alt dish {} status to {}", id, status);
+        dishService.updateDishStatus(status,id);
         return Result.success();
     }
 }
