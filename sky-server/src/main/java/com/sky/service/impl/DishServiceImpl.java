@@ -52,10 +52,10 @@ public class DishServiceImpl implements DishService {
         Long dishId = dish.getId();
         //口味表插入n条数据
         List<DishFlavor> flavors = dishDTO.getFlavors();
-        flavors.forEach(flavor -> {
-            flavor.setDishId(dishId);
-        });
         if (flavors != null && !flavors.isEmpty()) {
+            flavors.forEach(flavor -> {
+                flavor.setDishId(dishId);
+            });
             dishFlavorMapper.insertBatch(flavors);
         }
     }
@@ -95,5 +95,37 @@ public class DishServiceImpl implements DishService {
         //delete from dish where id in (1,2,3,4)
         dishMapper.deleteByIds(ids);
         dishFlavorMapper.deletebyDishIds(ids);
+    }
+
+    @Override
+    public DishVO getByIdWithFlavor(Long id) {
+        Dish dish = dishMapper.getById(id);
+
+        List<DishFlavor> flavors = dishFlavorMapper.getByDishid(id);
+
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+        dishVO.setFlavors(flavors);
+
+        return dishVO;
+    }
+
+    @Override
+    @Transactional
+    public void updateWithFlavor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+
+        //删除原有口味数据
+        dishFlavorMapper.deletebyDishId(dishDTO.getId());
+        //插入新口味数据
+        List<DishFlavor> updateFlavors = dishDTO.getFlavors();
+        if (updateFlavors != null && !updateFlavors.isEmpty()) {
+            updateFlavors.forEach(flavor -> {
+                flavor.setDishId(dishDTO.getId());
+            });
+            dishFlavorMapper.insertBatch(updateFlavors);
+        }
     }
 }
