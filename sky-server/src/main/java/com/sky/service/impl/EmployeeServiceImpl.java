@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
 //    @Override
     public void save(EmployeeDTO employeeDTO) {
-        System.out.println("thread id: " + Thread.currentThread().getId());
+//        System.out.println("thread id: " + Thread.currentThread().getId());
         Employee employee = new Employee();
 //        employee.setName(employeeDTO.getName());
         //对象属性拷贝
